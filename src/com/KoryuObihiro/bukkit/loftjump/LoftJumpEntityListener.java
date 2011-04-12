@@ -2,12 +2,10 @@ package com.KoryuObihiro.bukkit.loftjump;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
 public class LoftJumpEntityListener extends EntityListener
 { 
 

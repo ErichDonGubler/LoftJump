@@ -1,13 +1,12 @@
 name: LoftJump
 main: com.KoryuObihiro.bukkit.loftjump.LoftJump
-version: 0.0
+version: 1.0
 authors: [KoryuObihiro]
 description: |
     Give yourself some windfall with LoftJump.
-
 commands:
   loftjump:
-    aliases: [lj]
-    description: Activates LoftJump
+    aliases: [ljump, lj]
+    description: Allows control of PowerSigns.
     usage: |
-           /<command> | Toggles LoftJump
+           /<command> 

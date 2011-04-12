@@ -3,9 +3,6 @@ package com.KoryuObihiro.bukkit.loftjump;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.io.File;
-import java.io.FileWriter;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -104,8 +101,7 @@ public class LoftJump extends JavaPlugin{
 				{
 					if(args.length == 1)
 					{
-						toggleUsage(player);
-						return true;
+						return toggleUsage(player);
 					}
 					else if(args.length == 2)
 					{
@@ -157,9 +153,9 @@ private boolean sendUsage(Player player)
 	  public boolean player_Enabled(Player player) {return this.LoftJumpers.containsKey(player);}
 	    
 	  //toggle this plugin for a player
-	  public void toggleUsage(Player player){toggleUsage(player, true, null);}
-	  public void toggleUsage(Player player, boolean player_notify){toggleUsage(player, player_notify, null);}
-	  public void toggleUsage(Player player, boolean player_notify, Player sender) 
+	  public boolean toggleUsage(Player player){return toggleUsage(player, true, null);}
+	  public boolean toggleUsage(Player player, boolean player_notify){return toggleUsage(player, player_notify, null);}
+	  public boolean toggleUsage(Player player, boolean player_notify, Player sender) 
 	  {
 		  if(hasPermission(player, "loftjump.toggle") || sender != null)
 		  {
@@ -178,8 +174,8 @@ private boolean sendUsage(Player player)
 						+ "LoftJump for " + player.getName() + " enabled.");
 			}
 		  }
-		  else
-			  player.sendMessage(ChatColor.RED + "[LoftJump]You don't have permission to do that.");
+		  else player.sendMessage(ChatColor.RED + "[LoftJump]You don't have permission to do that.");
+		  return true;
 	  }
 	  
 	public void tryLoftJump(Player player, EntityDamageEvent event, Material consumeThis)
