@@ -1,7 +1,6 @@
 package com.KoryuObihiro.bukkit.loftjump;
 import java.util.logging.Logger;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -10,7 +9,7 @@ public class LoftJumpEntityListener extends EntityListener
 { 
 
 	public static LoftJump plugin;
-	public LoftJumpEntityListener(LoftJump plugin){this.plugin = plugin;}
+	public LoftJumpEntityListener(LoftJump plugin){LoftJumpEntityListener.plugin = plugin;}
 	public static Logger log = Logger.getLogger("Minecraft");
 	//This method is called when ever a block is placed.
 	@Override
@@ -22,10 +21,8 @@ public class LoftJumpEntityListener extends EntityListener
 			player = (Player)event.getEntity();
 		}
 		catch(Exception e){return;}
-		Material toConsume = Material.FEATHER;
-		
 		if(event.getCause().equals(DamageCause.FALL))
-			plugin.tryLoftJump(player, event, toConsume);
+			plugin.tryLoftJump(player, event);
 		return;
 	 }
 }

@@ -20,9 +20,12 @@ public class LoftJumpPlayerListener extends PlayerListener
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		if(plugin.settings_onByDefault && !plugin.player_Enabled(event.getPlayer()) 
+		if(plugin.settings_use_onByDefault && !plugin.player_Enabled(event.getPlayer()) 
 				&& LoftJump.hasPermission(event.getPlayer(), "loftjump.use"))
 			plugin.toggleUsage(event.getPlayer(), false);
+		if(plugin.settings_free_onByDefault && !plugin.player_isFree(event.getPlayer()) 
+				&& LoftJump.hasPermission(event.getPlayer(), "loftjump.free"))
+			plugin.toggleFreedom(event.getPlayer(), false);
 	}
 	
 	@Override
@@ -30,6 +33,8 @@ public class LoftJumpPlayerListener extends PlayerListener
 	{
 		if (plugin.player_Enabled(event.getPlayer()))
 			plugin.toggleUsage(event.getPlayer(), false);
+		if(plugin.player_isFree(event.getPlayer()))
+			plugin.toggleFreedom(event.getPlayer(), false);
 	}
 	
 	@Override
@@ -37,6 +42,8 @@ public class LoftJumpPlayerListener extends PlayerListener
 	{
 		if (plugin.player_Enabled(event.getPlayer()))
 			plugin.toggleUsage(event.getPlayer(), false);
+		if(plugin.player_isFree(event.getPlayer()))
+			plugin.toggleFreedom(event.getPlayer(), false);
 	}
 				 
 }
