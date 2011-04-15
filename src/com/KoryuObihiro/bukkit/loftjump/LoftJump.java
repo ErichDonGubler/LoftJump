@@ -41,14 +41,7 @@ public class LoftJump extends JavaPlugin{
 	
 //SETTINGS TODO add changing of settings ingame, perhaps persistent with file read/write
 	
-//ENABLE/DISABLE
-	@Override
-	public void onDisable() 
-	{
-		//TODO Deregister when Bukkit supports
-		log.info("["+getDescription().getName()+"] disabled.");	
-	}
-
+////////////////////////// INITIALIZATION ///////////////////////////////
 	@Override
 	public void onEnable() 
 	{
@@ -70,7 +63,25 @@ public class LoftJump extends JavaPlugin{
 		getServer().getPluginManager().registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
 		getServer().getPluginManager().registerEvent(Event.Type.PLAYER_KICK, playerListener, Event.Priority.Normal, this);
 		getServer().getPluginManager().registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
+		
+		//placeholder for loadSettings, currently does nothing TODO
+		loadSettings();
 	}
+	
+	@Override
+	public void onDisable() 
+	{
+		//TODO Deregister when Bukkit supports
+		log.info("["+getDescription().getName()+"] disabled.");	
+	}
+	
+	public void loadSettings()
+	{
+		//TODO
+		return;
+	}
+	
+///////////////////// COMMAND HANDLING //////////////////////////////
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{
 		Player player = null;
@@ -78,20 +89,25 @@ public class LoftJump extends JavaPlugin{
 		String tempo = "";
 		for(String string : args)
 			tempo += " " + string;
-		log.info("["+getDescription().getName()+"]" + "got command: "+ label.toString() + tempo);
 		
 		if (label.equalsIgnoreCase("LoftJump") || label.equalsIgnoreCase("lj"))
 		{
 			// §
 			if (sender instanceof Player)
 				player = (Player)sender;
-			else
-			{
-				log.info("Error: That command must be used by a player.");
-				return true;
-			}
 			if (args.length == 0)
 			{
+				//handle external commands like console, IRC, etc.
+				if(player == null)
+				{
+						log.info("[LoftJump]Commands:\n" +
+								"loftjump (alias /lj) - brings up this help message\n" +
+								"loftjump toggle (player) (alias /lj t) - toggle LoftJump on a player\n" +
+								"loftjump free (player) (alias /lj f) - toggle item consume on a player");
+						return true;
+				}
+				
+				//handle player usage
 				sendUsage(player);
 				if(hasPermission(player, "loftjump.check")) 
 				{
@@ -105,6 +121,12 @@ public class LoftJump extends JavaPlugin{
 				{
 					if(args.length == 1)
 					{
+						//handle external commands like console, IRC, etc.
+						if(player == null)
+						{
+								log.info("Error: player not specified.");
+								return true;
+						}
 						return toggleUsage(player);
 					}
 					else if(args.length == 2)
@@ -120,14 +142,17 @@ public class LoftJump extends JavaPlugin{
 								}
 						if(playerMatch != null)
 						{
-							if(hasPermission(player, "loftjump.toggleothers"))
+							if(player == null)
+								return toggleFromConsole(playerMatch);
+							else if(hasPermission(player, "loftjump.toggleothers"))
 								toggleUsage(playerMatch, true, player);
 							else player.sendMessage(ChatColor.RED + "[LoftJump]You don't have permission to toggle others.");
 							return true;
 						}
 						else
 						{
-							player.sendMessage(ChatColor.RED + "[LoftJump]Couldn't find matching player name.");
+							if(player == null) log.info("Error: Couldn't find matching player substring.");
+							else player.sendMessage(ChatColor.RED + "[LoftJump]Couldn't find matching player name.");
 							return true;
 						}
 					}
@@ -151,14 +176,17 @@ public class LoftJump extends JavaPlugin{
 								}
 						if(playerMatch != null)
 						{
-							if(hasPermission(player, "loftjump.freeothers"))
+							if(player == null)
+								return toggleFreeFromConsole(playerMatch);
+							else if(hasPermission(player, "loftjump.freeothers"))
 								toggleFreedom(playerMatch, true, player);
 							else player.sendMessage(ChatColor.RED + "[LoftJump]You don't have permission to toggle others.");
 							return true;
 						}
 						else
 						{
-							player.sendMessage(ChatColor.RED + "[LoftJump]Couldn't find matching player name.");
+							if(player == null) log.info("Error: Couldn't find matching player substring.");
+							else player.sendMessage(ChatColor.RED + "[LoftJump]Couldn't find matching player name.");
 							return true;
 						}
 					}
@@ -168,21 +196,17 @@ public class LoftJump extends JavaPlugin{
 		return sendUsage(player);
 	}
 	
-private boolean sendUsage(Player player) 
-{
-	player.sendMessage(ChatColor.LIGHT_PURPLE + "LoftJump commands: ");
-	player.sendMessage(ChatColor.LIGHT_PURPLE + "/loftjump (alias /lj) - brings up this help message");
-	if(hasPermission(player, "loftjump.toggle")) player.sendMessage(ChatColor.LIGHT_PURPLE + "/loftjump toggle [player] (alias /lj t) - toggle LoftJump");
-	if(hasPermission(player, "loftjump.free")) player.sendMessage(ChatColor.LIGHT_PURPLE + "/loftjump free [player] (alias /lj f) - toggle item consume");
-	return true;
-}
-
-	//OTHER
-	  //player_Enabled function
-	  //returns a bool based on whether the inputted player is on the LoftJumpers hashmap or not
-	  public boolean player_Enabled(Player player) {return this.LoftJumpers.containsKey(player);}
-	  public boolean player_isFree(Player player) {return this.freeMen.containsKey(player);}
-	    
+	private boolean sendUsage(Player player) 
+	{
+		player.sendMessage(ChatColor.LIGHT_PURPLE + "LoftJump commands: ");
+		player.sendMessage(ChatColor.LIGHT_PURPLE + "/loftjump (alias /lj) - brings up this help message");
+		if(hasPermission(player, "loftjump.toggle")) player.sendMessage(ChatColor.LIGHT_PURPLE + "/loftjump toggle [player] (alias /lj t) - toggle LoftJump");
+		if(hasPermission(player, "loftjump.free")) player.sendMessage(ChatColor.LIGHT_PURPLE + "/loftjump free [player] (alias /lj f) - toggle item consume");
+		return true;
+	}
+	
+////////////////////// PLAYER TOGGLES ////////////////////////
+    
 	  //toggle this plugin for a player
 	  public boolean toggleUsage(Player player){return toggleUsage(player, true, null);}
 	  public boolean toggleUsage(Player player, boolean player_notify){return toggleUsage(player, player_notify, null);}
@@ -210,7 +234,6 @@ private boolean sendUsage(Player player)
 	  }
 	  
 	//toggle cost associated with LoftJumping
-	  //TODO add permissions nodes elsewhere similar to toggle/others
 	  public boolean toggleFreedom(Player player){return toggleFreedom(player, true, null);}
 	  public boolean toggleFreedom(Player player, boolean player_notify){return toggleFreedom(player, player_notify, null);}
 	  public boolean toggleFreedom(Player player, boolean player_notify, Player sender) 
@@ -246,6 +269,42 @@ private boolean sendUsage(Player player)
 		  
 		  return true;
 	  }
+	  
+	  private boolean toggleFromConsole(Player player) 
+	  {
+		  if (player_Enabled(player)) 
+			{
+				this.LoftJumpers.remove(player);
+				player.sendMessage(ChatColor.GREEN + "LoftJump disabled.");
+				log.info("[LoftJump] for " + player.getName() + " disabled.");
+			} 
+			else 
+			{
+				this.LoftJumpers.put(player, null);
+				player.sendMessage(ChatColor.GREEN + "LoftJump enabled.");
+				log.info("[LoftJump] for " + player.getName() + " enabled.");
+			}
+		  return true;
+	  }
+	
+	  private boolean toggleFreeFromConsole(Player player) 
+	  {
+		  if (player_isFree(player)) 
+			{
+				this.freeMen.remove(player);
+				player.sendMessage(ChatColor.GREEN + "LoftJump item consumption enabled.");
+				log.info("[LoftJump]Item consumption for " + player.getName() + " enabled.");
+			} 
+			else 
+			{
+				this.freeMen.put(player, null);
+				player.sendMessage(ChatColor.GREEN + "LoftJump item consumption disabled.");
+				log.info("[LoftJump]Item consumption for " + player.getName() + " disabled.");
+			}
+		  return true;
+	  }
+	  
+//////////////////// LOFTJUMP EXECUTION /////////////////////////
 	  
 	public void tryLoftJump(Player player, EntityDamageEvent event)
 	{
@@ -286,6 +345,7 @@ private boolean sendUsage(Player player)
 		return;
 	}
 
+/////////////////// HELPER FUNCTIONS ////////////////////////////
 	//check for Permissions
 	public static boolean hasPermission(Player player, String permission)
 	{
@@ -297,6 +357,11 @@ private boolean sendUsage(Player player)
 		}
 		return player.isOp();
 	}
+
+//player_Enabled function
+//returns a bool based on whether the inputted player is on the LoftJumpers hashmap or not
+public boolean player_Enabled(Player player) {return this.LoftJumpers.containsKey(player);}
+public boolean player_isFree(Player player) {return this.freeMen.containsKey(player);}
 
 	  
 	  
