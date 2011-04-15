@@ -1,3 +1,19 @@
 Step 1) Toggle LoftJump
 Step 2) Hold your feather in your hand
 Step 3) Reduce fall damage!
+
+Command reference:
+/loftjump (alias /lj)
+/loftjump toggle [player] (alias /lj t) - toggle a player's use
+/loftjump free [player] (alias /lj f) - toggle item consumption on a player
+/loftjump check - does nothing useful at the moment.
+
+Permissions nodes:
+loftjump.use 
+loftjump.free
+loftjump.freeothers
+loftjump.toggle
+loftjump.toggleothers
+loftjump.check
+
+If Permissions is not detected, then these default to checking OP status.
