@@ -6,14 +6,17 @@ Command reference:
 /loftjump (alias /lj)
 /loftjump toggle [player] (alias /lj t) - toggle a player's use
 /loftjump free [player] (alias /lj f) - toggle item consumption on a player
-/loftjump check - does nothing useful at the moment.
+/loftjump check [world] (alias /lj c) - check the file configuration for a world
+/loftjump reload - reload the file configuration
 
 Permissions nodes:
 loftjump.use 
 loftjump.free
-loftjump.freeothers
+loftjump.free.others
 loftjump.toggle
-loftjump.toggleothers
+loftjump.toggle.others
 loftjump.check
+loftjump.check.others
+loftjump.reload
 
 If Permissions is not detected, then these default to checking OP status.
