@@ -14,7 +14,7 @@ public class LoftJumpConfiguration
 {
 //// MEMBERS ////
 	private LoftJump plugin;
-	public static Logger log = Logger.getLogger("Minecraft");
+	private Logger log;
 	public World world;
 	
 	public boolean settings_use_onByDefault = true;
@@ -30,7 +30,9 @@ public class LoftJumpConfiguration
 	{
 		this.world = world;
 		this.plugin = plugin;
+		this.log = LoftJump.log;
 	}
+	public LoftJumpConfiguration() {}
 	
 	
 //// CLASS-SPECIFIC FUNCTIONS ////

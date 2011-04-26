@@ -34,7 +34,6 @@ public class LoftJump extends JavaPlugin{
 	public static Logger log = Logger.getLogger("Minecraft");
 	public static PermissionHandler Permissions = null;
 	
-	//TODO There's a reason to question the use of the HashMap for players right now, with Permissions used - IDK
 	//DEFAULT SETTINGS
 	
 ////////////////////////// INITIALIZATION ///////////////////////////////
@@ -72,6 +71,7 @@ public class LoftJump extends JavaPlugin{
 	{
 		//TODO Deregister when Bukkit supports
 		log.info("["+getDescription().getName()+"] disabled.");	
+		configs.clear();
 	}
 	
 	
@@ -229,9 +229,9 @@ public class LoftJump extends JavaPlugin{
 				}
 				else if(args[0].equalsIgnoreCase("reload"))
 				{
-					if(player == null) return reloadConfig(player);
+					if(player == null) return reloadConfigs(player);
 					else if(hasPermission(player, "loftjump.reload"))
-						return reloadConfig(player);
+						return reloadConfigs(player);
 					player.sendMessage(ChatColor.RED + "[LoftJump] You don't have access to that command.");
 				}
 			}
@@ -416,7 +416,7 @@ public class LoftJump extends JavaPlugin{
 	  
 	public void tryLoftJump(Player player, EntityDamageEvent event)
 	{
-		LoftJumpConfiguration thisConfig = configs.get(player.getWorld());
+		LoftJumpConfiguration thisConfig = getConfig(event.getEntity().getWorld());
 		int cost = thisConfig.get_Cost();
 		Material toConsume = thisConfig.get_ConsumeMaterial();
 		Material holdMe = thisConfig.get_HoldMaterial();
@@ -456,7 +456,19 @@ public class LoftJump extends JavaPlugin{
 		return;
 	}
 
-/////////////////// HELPER FUNCTIONS ////////////////////////////
+private LoftJumpConfiguration getConfig(World world) 
+{
+		if(configs.containsKey(world))
+		{
+			return configs.get(world);
+		}
+		else if(loadConfig(world))
+				return configs.get(world);
+		else
+			return new LoftJumpConfiguration();
+}
+
+	/////////////////// HELPER FUNCTIONS ////////////////////////////
 	//check for Permissions
 	public static boolean hasPermission(Player player, String permission)
 	{
@@ -475,7 +487,19 @@ public class LoftJump extends JavaPlugin{
 	public boolean player_isFree(Player player) {return this.freeMen.containsKey(player);}
 
 	  
-	private boolean reloadConfig(Player player) 
+	public boolean loadConfig(World world)
+	{
+		if(!configs.containsKey(world) && world != null)
+		{
+			configs.put(world, new LoftJumpConfiguration(world, this));
+			configs.get(world).loadSettings(this.getConfiguration());
+			return true;
+		}
+		else return false;
+	}
+	
+	public boolean reloadConfigs(Player player) {return reloadConfigs(player, true);}
+	public boolean reloadConfigs(Player player, boolean printToConsole) 
 	{
 		configs.clear();
 		for(World world : getServer().getWorlds())
@@ -483,7 +507,10 @@ public class LoftJump extends JavaPlugin{
 			configs.put(world, new LoftJumpConfiguration(world, this));
 			configs.get(world).loadSettings(this.getConfiguration());
 		}
-		if(player == null) log.info("[LoftJump] World configuration reloaded.");
+		if(player == null)
+		{
+			if(printToConsole) log.info("[LoftJump] World configuration reloaded.");
+		}
 		else player.sendMessage(ChatColor.GREEN + "[LoftJump] World configuration reloaded.");
 		
 		return true;

@@ -7,6 +7,6 @@ description: |
 commands:
   loftjump:
     aliases: [ljump, lj]
-    description: Allows control of PowerSigns.
+    description: Use LJ-specific commands
     usage: |
            /<command> 
