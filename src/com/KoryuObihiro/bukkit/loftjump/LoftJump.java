@@ -79,14 +79,8 @@ public class LoftJump extends JavaPlugin{
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{
 		Player player = null;
-		//debugging
-		String tempo = "";
-		for(String string : args)
-			tempo += " " + string;
-		
 		if (label.equalsIgnoreCase("LoftJump") || label.equalsIgnoreCase("lj"))
 		{
-			// §
 			if (sender instanceof Player)
 				player = (Player)sender;
 			if (args.length == 0)

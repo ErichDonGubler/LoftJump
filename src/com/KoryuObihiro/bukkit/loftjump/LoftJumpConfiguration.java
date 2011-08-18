@@ -1,14 +1,10 @@
 package com.KoryuObihiro.bukkit.loftjump;
-import java.io.File;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.util.config.ConfigurationNode;
-
-
 
 public class LoftJumpConfiguration
 {
@@ -55,31 +51,11 @@ public class LoftJumpConfiguration
 	
 	public void loadSettings(Configuration config)
 	{
-		/* Stuff to hopefully implement in a later version?
-		   	File yml = null;
-		 	log.info("Checking at location " + plugin.getDataFolder().toString() + "\\" + world.getName() + ".yml");
-			try{yml = new File(plugin.getDataFolder() + "\\" + world.getName() + ".yml");}
-			catch(Exception e)
-			{
-				log.severe("Loftjump configuration for world " + world.getName() + " not found!");
-				return;
-			}
-			
-			if (!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdirs();
-			if (!yml.exists()) 
-			{
-				try { yml.createNewFile();} 
-				catch (IOException e) {e.printStackTrace();}
-			}
-		*/
-		
-		//if (!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdirs();
+		//TODO NEXT VERSION: Add autogen. :D
 		
 		config.load();
 		
-		ConfigurationNode thisConfig = config.getNode(world.getName()); //hopefully this will not be necessary as a better multiworld is added
-	//grab the settings from the YAML file
-		
+		ConfigurationNode thisConfig = config.getNode(world.getName()); 		
 		try
 		{
 		//settings_HoldMaterial
@@ -116,19 +92,10 @@ public class LoftJumpConfiguration
 			}
 
 			log.info("[LoftJump] Settings for world " + world.getName() + " loaded.");
-			/* More debugging stuff. :D
-			log.info("Settings for world " + world.getName() + ":");
-			log.info("HoldMaterial: " + thisConfig.getString("holdMaterial", "defaaault"));
-			log.info("HoldMaterial_use: " + thisConfig.getString("holdMaterial_use", "defaaault"));
-			log.info("ConsumeMaterial: " + thisConfig.getString("consumeMaterial", "defaaault"));
-			log.info("use_onByDefault: " + thisConfig.getString("use_onByDefault", "defaaault"));
-			log.info("free_onByDefault: " + thisConfig.getString("free_onByDefault", "defaaault"));
-			log.info("" + thisConfig.getString("cost", "defaaault"));
-			 */
 		}
 		catch(Exception e)
 		{
-			log.severe("[LoftJump] Invalid file configuration for world " + world.getName() + ";\nusing default settings");
+			log.severe("[LoftJump] Invalid file configuration for world " + world.getName() + " - using default settings");
 			useDefaults();
 		}
 		
