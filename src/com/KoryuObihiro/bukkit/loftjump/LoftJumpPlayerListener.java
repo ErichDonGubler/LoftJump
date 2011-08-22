@@ -1,7 +1,7 @@
 package com.KoryuObihiro.bukkit.loftjump;
 
-import org.bukkit.World;
-
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -16,44 +16,29 @@ public class LoftJumpPlayerListener extends PlayerListener
 	public LoftJumpPlayerListener(LoftJump plugin) {this.plugin = plugin;}
 	
 //Functions
+	@Override 
+	public void onPlayerInteract(PlayerInteractEvent event)
+	{
+		if((event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) && event.getPlayer().getLocation().add(0,  -1, 0).getBlock().isEmpty())
+			plugin.loadPlayer(event.getPlayer()).fireInteractEvent();
+	}
+	
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		//enable LJ and LJ-free according to settings
-		World world = event.getPlayer().getWorld();
-		if(plugin.configs.get(world) == null)
-		{
-			plugin.loadConfig(world);
-		}
-		if(plugin.configs.get(world) == null)
-		{
-			LoftJump.log.info("Could not initialize configuration settings for world " + world.getName());
-		}
-		else 
-		{
-			if(plugin.configs.get(world).get_use_onByDefault() 
-				&& !plugin.player_Enabled(event.getPlayer()) 
-				&& LoftJump.hasPermission(event.getPlayer(), "loftjump.use"))
-			plugin.toggleUsage(event.getPlayer(), false);
-		
-			if(plugin.configs.get(world).get_free_onByDefault() && !plugin.player_isFree(event.getPlayer()) 
-					&& LoftJump.hasPermission(event.getPlayer(), "loftjump.free"))
-				plugin.toggleFreedom(event.getPlayer(), false);
-		}
+		plugin.loadPlayer(event.getPlayer());
 	}
 	
 	@Override
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
-		if(plugin.player_Enabled(event.getPlayer())) plugin.toggleUsage(event.getPlayer(), false);
-		if(plugin.player_isFree(event.getPlayer())) plugin.toggleFreedom(event.getPlayer(), false);
+		plugin.unloadPlayer(event.getPlayer());
 	}
 	
 	@Override
 	public void onPlayerKick(PlayerKickEvent event)
 	{
-		if(plugin.player_Enabled(event.getPlayer())) plugin.toggleUsage(event.getPlayer(), false);
-		if(plugin.player_isFree(event.getPlayer())) plugin.toggleFreedom(event.getPlayer(), false);
+		plugin.unloadPlayer(event.getPlayer());
 	}
 				 
 }

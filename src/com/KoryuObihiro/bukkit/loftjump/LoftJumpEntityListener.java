@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityListener;
+
 public class LoftJumpEntityListener extends EntityListener
 { 
 
@@ -15,14 +16,11 @@ public class LoftJumpEntityListener extends EntityListener
 	@Override
 	 public void onEntityDamage(EntityDamageEvent event) 
 	 {
-		Player player = null;
-		try
+		if(event.getEntity() instanceof Player && event.getCause().equals(DamageCause.FALL))
 		{
-			player = (Player)event.getEntity();
+			LoftJumpPlayerConfiguration playerConfig = plugin.loadPlayer((Player)event.getEntity());
+			if(playerConfig != null)
+				event.setDamage(playerConfig.applyCushion(event.getDamage()));
 		}
-		catch(Exception e){return;}
-		if(event.getCause().equals(DamageCause.FALL))
-			plugin.tryLoftJump(player, event);
-		return;
 	 }
 }
