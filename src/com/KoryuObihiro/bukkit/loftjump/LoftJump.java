@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 /**
  * "LoftJump" for Bukkit
  * 
- * @author Erich Gubler
+ * @author Erich Gubler, Kylie Estrada
  *
  */
 public class LoftJump extends JavaPlugin{
